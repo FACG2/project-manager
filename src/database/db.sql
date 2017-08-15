@@ -29,7 +29,8 @@ CREATE TABLE teams(
   description TEXT DEFAULT 'No Description'
 );
 
-CREATE TABLE memebers(
+-- i edited memebers to members after I created this **** DB
+CREATE TABLE members(
   ID SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(100) NOT NULL,
   bio TEXT DEFAULT 'No Bio',
