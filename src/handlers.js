@@ -44,7 +44,7 @@ function handleAddTeam(req, res){
     getData("INSERT INTO teams() VALUES() RETURNING .." , (err, result)=>{
       if(err){
         res.writeHead(500 , {'Content-Type': 'text/html'});
-        res.end('internal server error ,,, in addteam Route');
+        res.end(JSON.stringify([{ message: 'internal server error ,,, in addteam Route'}]));
       }
       else{
         res.writeHead(200 , {'Content-Type': 'application/json'});
@@ -55,12 +55,33 @@ function handleAddTeam(req, res){
 }
 
 function handleTeams(req, res){
+  let teamID = req.url.slice(3);
+  getData('SELECT * FROM teams ...' , (err, result)=> {
+    if(err){
+      res.writeHead(500 , JSON.strigify([{message: 'something went wrong in handleTeams Route'}]));
+      res.end('something went wrong in handleTeams');
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application.json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 
 }
 
 
 function handleMembers(req, res){
-
+  let memberID = req.url.slice(4);
+  getData('SELECT * FROM members ...' , (err, result)=> {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'text/plain'});
+      res.end(JSON.strigify([{message: 'something went wrong in handleMembers'}]));
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application.json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 }
 
 function handleAddMember(req, res){
@@ -93,7 +114,17 @@ function handleDeleteProject(req, res){
 
 
 function handleProjectPlan(req, res){
-
+  let planID = req.url.slice(3);
+  getData('SELECT * FROM  ...' , (err, result)=> {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'text/plain'});
+      res.end(JSON.strigify([{message: 'something went wrong in handleMembers'}]));
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application.json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 }
 
 function handleAddTask(req, res){
