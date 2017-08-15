@@ -33,11 +33,11 @@ function handleHome(req, res){
 // POST request
 function handleAddTeam(req, res){
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
+  req.on('end' , () => {
     const data = queryString.parse(content);
     // github.com/samer?name=samer&age=20
     // ==> {name: samer , age: 20}
@@ -64,10 +64,46 @@ function handleMembers(req, res){
 }
 
 function handleAddMember(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+
+  req.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('INSERT INTO member ....',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('Internal Server Error .... AddMember Route');
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleDeleteMemeber(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+
+  req.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('DELETE member ....',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('Internal Server Error,,,, DeleteMember Route');
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
@@ -97,14 +133,65 @@ function handleProjectPlan(req, res){
 }
 
 function handleAddTask(req, res){
+  let content = '';
+  req.on('data',(shunk) =>{
+    content += shunk;
+  });
+
+  req.on('end',() =>{
+    const data = querystring.parse(content);
+    getData('INSERT INTO tasks() VALUES ()',(err.result) =>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('Internal Server Error ... in AddTask Route');
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleEditTask(req, res){
-
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+  req.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('UPDATE ...',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('Internal Server Error ... EditTask Route');
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 }
 
 function handleDeleteTask(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+  req.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('DELETE....',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('Internal Server Error ..... DeleteTask Route');
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
