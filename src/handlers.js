@@ -376,6 +376,32 @@ function handleGeneric(req, res){
   });
 }
 
+function handleGetData(req,res){
+  const query = `SELECT  teams.name, teams.id , teams.description, memebers.id , memebers.pic , memebers.name FROM teams_members
+                 INNER JOIN memebers ON memebers.id = teams_members.member_id
+                 INNER JOIN teams ON teams.id = teams_members.team_id `;
+  getData(query , (err, result) => {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'application/json'});
+      res.end(JSON..stringify([{message: 'No Data Found'}]));
+    }
+    else{
+      let temp=[];
+      let newArr = result.reduce((acc , team) => {
+        if(temp.includes(team.team_id)){
+          acc[temp.indexOf(team.team_id)].members.push({id:team.member_id,name:team.member_name,pic:team.pic});
+        }else{
+          acc.push({id:team.team_id ,name:team.team_name ,description:team.description, members:[{id:team.member_id,name:team.member_name,pic:team.pic}]});
+          temp.push(team.team_id);
+        }
+        return acc;
+      } , []);
+      res.writeHead(200 , {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(newArr));
+  })
+}
+// SELECT  teams.name, teams.id , teams.description, memebers.id , memebers.pic , memebers.name FROM teams_members INNER JOIN memebers ON memebers.id = teams_members.member_id INNER JOIN teams ON teams.id = teams_members.team_id
+
 module.exports = {
   handleAddTeam: handleAddTeam,
   handleTeams: handleTeams,
@@ -391,5 +417,6 @@ module.exports = {
   handleAddTask, handleAddTask,
   handleEditTask: handleEditTask,
   handleDeleteTask: handleDeleteTask,
-  handleNotFound: handleNotFound
+  handleNotFound: handleNotFound,
+  handleGetData: handleGetData
 }

@@ -7,6 +7,7 @@ function router(req, res){
     handlers.handleHome(req,res);
   }else if (url === '/getdata') {
     //get teams
+    handlers.handleGetData(req,res);
   }else if (url === '/addteam' && req.method.toUpperCase() === 'POST') {
     //add team
     handlers.handleAddTeam(req, res);
