@@ -1,10 +1,13 @@
 (function() {
   const teamsDiv = document.getElementsByClassName('teams')[0];
-  const mainTitleDiv = document.getElementsByClassName('mainTitle')[0]
+  const mainTitleDiv = document.getElementsByClassName('mainTitle')[0];
+  ;
   apiReq('/getData', 'GET', function(err,data) {
     if (!err) {
+      console.log(data);
       teamsDiv.innerHTML = generateTeams(data)
     }else{
+      console.log(data);
       mainTitleDiv.innerHTML = data;
     }
 
