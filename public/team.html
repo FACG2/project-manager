@@ -7,7 +7,7 @@
   <meta name="description" content="project-manager">
   <meta name="viewport" content="initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
-  <title>Project Manager</title>
+  <title>Team profile</title>
 </head>
   <body>
     <header>
@@ -20,8 +20,32 @@
         </div>
       </nav>
     </header>
+    <div class="container main">
+      <aside class="teamSidebar">
+        <h1>Team Name</h1>
+        <ul>
+          <li class="addNewMember"><a href="#">Add new Member</a></li>
+          <li><i>DELETE</i> Member Name</li>
+        </ul>
+      </aside>
+      <div class="teamInfo">
+        <section id="teamDescSec">
+          <p>any description for team</p>
+        </section>
+        <section id="teamProjectsSec">
+          <div class="teamProjectDiv">
+            <a href="#"><h3>Project Name</h3></a>
+            <h4>Project description</h4>
+            <p>project Status</p>
+            <ul>
+              <li><a href="#"><img src="" alt=""></a></li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
     <script type="text/javascript" src="js/request.js"></script>
-    <script type="text/javascript" src="js/dom.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript" src="js/team_dom.js"></script>
   </body>
 </html>
