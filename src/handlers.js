@@ -61,11 +61,12 @@ function handleAddTeam(req, res){
 
 function handleTeams(req, res){
   let teamID = req.url.slice(3);
+  // let teamID = req.url.split('/tm')[1];
   const query = `SELECT * FROM team WHERE id = ${Number(teamID)}`;
   getData(query , (err, result) => {
     if(err){
-      res.writeHead(500 , JSON.strigify([{message: 'something went wrong in handleTeams Route'}]));
-      res.end('something went wrong in handleTeams');
+      res.writeHead(500 , {'Content-Type': 'application/json'});
+      res.end(JSON.strigify([{message: 'Team not found'}]));
     }
     else{
       res.writeHead(200 , {'Content-Type': 'application/json'});

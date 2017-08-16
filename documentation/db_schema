@@ -1,0 +1,39 @@
+Tasks table =>
+- id (primary key , serial)
+- title (varchar(100) NOT NULL)
+- description (text DEFAULT no description)
+- reference (reference_id FK(reference table))
+- state (varchar(100) NOT NULL (fixed number for states))
+- project_id(project_id FK)(project table)
+
+References_table Table =>
+- id (primary key , serial)
+- title (varchar(100) NOT NULL)
+- color (varchar(20) NOT NULL(hex number))
+
+Teams Table =>
+- id (primary key , serial)
+- name
+- description (text DEFAULT no description)
+
+members =>
+- id (primary key , serial)
+- name (varchar(100) NOT NULL)
+- bio (text DEFAULT no bio)
+- pic (varchar(200) NOT NULL)
+- github link (varchar(200) NOT NULL)
+
+projects =>
+- id (primary key , serial)
+- title (varchar(100) NOT NULL)
+- description (text DEFAULT no description)
+- state (varchar(100) NOT NULL)(completed , in-progress, on-hold)
+
+
+teams-members =>
+- team_id(team_id FK(team table))
+- member_id(member_id FK(member table))
+
+members-projects=>
+- member_id(member_id FK(member table))
+- project_id(project_id FK(project table))
