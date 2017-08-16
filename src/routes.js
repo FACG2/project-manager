@@ -24,7 +24,7 @@ function router(req, res){
 
   }else if (url === '/deletemember' && req.method.toUpperCase() === 'POST') {
     // delete member with id sent in post
-    handlers.handleDeleteMemeber(req, res)l;
+    handlers.handleDeleteMemeber(req, res);
 
   }else if (url === '/editteam' && req.method.toUpperCase() === 'POST') {
     // edit team with id sent in post
@@ -50,7 +50,7 @@ function router(req, res){
     // get project plan page
     handlers.handleProjectPlan(req, res);
 
-  }else if (url === '/addtask' && req.method.toUpperCase() === 'POST') {
+  } else if (url === '/addtask' && req.method.toUpperCase() === 'POST') {
     //add task
     handlers.handleAddTask(req, res);
 

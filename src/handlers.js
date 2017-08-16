@@ -78,19 +78,74 @@ function handleEditTeam(req, res){
 function handleDeleteTeam(req, res){
 
 }
-
+/* my section */
 function handleAddProject(req, res){
+
+  let content = '';
+  res.on('data' , (chunk) => {
+    content += chunk;
+  });
+
+  res.on('end' , () => {
+    const data = queryString.parse(content);
+
+    getData("INSERT INTO projects() VALUES() RETURNING .." , (err, result)=>{
+      if(err){
+        res.writeHead(500 , {'Content-Type': 'text/html'});
+        res.end('internal server error ,,, in add projects Route');
+      }
+      else{
+        res.writeHead(200 , {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
+
+
 
 }
 
 function handleEditProject(req, res){
 
+  let content = '';
+  res.on('data' , (chunk) => {
+    content += chunk;
+  });
+
+  res.on('end' , () => {
+    const data = queryString.parse(content);
+
+    getData(" UPDATE projects SET title = value1, description = value2, ...WHERE condition .." ,
+     (err, result)=>{
+      if(err){
+        res.writeHead(500 , {'Content-Type': 'text/html'});
+        res.end('internal server error ,,, in edit project Route');
+      }
+      else{
+        res.writeHead(200 , {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
+
 }
 
 function handleDeleteProject(req, res){
+let project_title = '';
+    getData(`DELETE FROM projects WHERE title = ${projects.title}` ,
+       (err, result)=>{
+        if(err){
+          res.writeHead(500 , {'Content-Type': 'text/html'});
+          res.end('internal server error ,,, in delete project Route');
+        }
+        else{
+          res.writeHead(200 , {'Content-Type': 'application/json'});
+          res.end(JSON.stringify(result));
+        }
+      });
+    }
 
-}
-
+/* end of my section */
 
 function handleProjectPlan(req, res){
 
