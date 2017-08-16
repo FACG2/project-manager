@@ -4,7 +4,7 @@ const getData = require('./queries/generic');
 
 function test(cb){
   let obj = {};
-  const query = `SELECT  teams.name AS team_name, teams.id AS team_id , teams.description , memebers.pic , memebers.name AS member_name FROM teams_members
+  const query = `SELECT  teams.name AS team_name, teams.id AS team_id ,memebers.id AS member_id , teams.description , memebers.pic , memebers.name AS member_name FROM teams_members
                  INNER JOIN memebers ON memebers.id = teams_members.member_id
                  INNER JOIN teams ON teams.id = teams_members.team_id;`;
     getData(query , (err, res)=>{
@@ -33,7 +33,8 @@ test((err, res) =>{
       }
       return acc;
     } , []);
-    console.log(newArr);
+    console.log(newArr[0]);
+    // console.log(temp);
     return newArr;
   }
 });

@@ -377,7 +377,8 @@ function handleGeneric(req, res){
 }
 
 function handleGetData(req,res){
-  const query = `SELECT  teams.name AS team_name, teams.id AS team_id , teams.description , memebers.pic , memebers.name AS member_name FROM teams_members
+
+  const query = `SELECT  teams.name, teams.id , teams.description, memebers.id ,memebers.id AS member_id , memebers.pic , memebers.name FROM teams_members
                  INNER JOIN memebers ON memebers.id = teams_members.member_id
                  INNER JOIN teams ON teams.id = teams_members.team_id;`;
   getData(query , (err, result) => {
