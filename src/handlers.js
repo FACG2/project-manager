@@ -33,18 +33,23 @@ function handleHome(req, res){
 // POST request
 function handleAddTeam(req, res){
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
-    const data = queryString.parse(content);
+  req.on('end' , () => {
+    // const data = queryString.parse(content);
     // github.com/samer?name=samer&age=20
     // ==> {name: samer , age: 20}
-    getData("INSERT INTO teams() VALUES() RETURNING .." , (err, result)=>{
+    const data = {
+      name : 'any name',
+      description: 'description'
+    }
+    const query = `INSERT INTO teams(name , description) VALUES('${data.name}' , '${data.description}');`;
+    getData(query , (err, result)=>{
       if(err){
-        res.writeHead(500 , {'Content-Type': 'text/html'});
-        res.end('internal server error ,,, in addteam Route');
+        res.writeHead(500 , {'Content-Type': 'application/json'});
+        res.end(JSON.stringify([{ message: 'internal server error ,,, in addteam Route'}]));
       }
       else{
         res.writeHead(200 , {'Content-Type': 'application/json'});
@@ -55,19 +60,85 @@ function handleAddTeam(req, res){
 }
 
 function handleTeams(req, res){
+  let teamID = req.url.slice(3);
+  const query = `SELECT * FROM team WHERE id = ${Number(teamID)}`;
+  getData(query , (err, result) => {
+    if(err){
+      res.writeHead(500 , JSON.strigify([{message: 'something went wrong in handleTeams Route'}]));
+      res.end('something went wrong in handleTeams');
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 
 }
 
 
 function handleMembers(req, res){
-
+  let memberID = req.url.slice(4);
+  const query = `SELECT * FROM memebers WHERE id = '${Number(memberID)}'`;
+  getData(query , (err, result)=> {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'text/plain'});
+      res.end(JSON.strigify([{message: 'something went wrong in handleMembers'}]));
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 }
 
 function handleAddMember(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+
+  req.on('end',()=>{
+    // const data = querystring.parse(content);
+    const data = {
+      member_id: 1,
+      project_id: 5
+    }
+    const query = `INSERT INTO teams_members(team_id , member_id) VALUES('${data.team_id}' , '${data.project_id}');`;
+    getData(query,(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'application/json'});
+        res.end([{message: 'Internal Server Error .... AddMember Route' }]);
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleDeleteMemeber(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+
+  req.on('end',()=>{
+    // const data = querystring.parse(content);
+    const member_id = 1;
+    const query = `DELETE FROM teams_members WHERE member_id = ${member_id}`
+    getData(query ,(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'application/json'});
+        res.end(JSON.stringify([{message: 'Internal Server Error,,,, DeleteMember Route' }]));
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
@@ -148,23 +219,113 @@ let project_title = '';
 /* end of my section */
 
 function handleProjectPlan(req, res){
-
+  let planID = req.url.slice(3);
+  const query = `SELECT * FROM `
+  getData('SELECT * FROM  ...' , (err, result)=> {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'application/json'});
+      res.end(JSON.strigify(JSON.stringify([{message: 'something went wrong in handleMembers'}])));
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'application.json'});
+      res.end(JSON.stringify(result));
+    }
+  });
 }
 
 function handleAddTask(req, res){
+  let content = '';
+  req.on('data',(shunk) =>{
+    content += shunk;
+  });
+
+  req.on('end',() =>{
+    // const data = querystring.parse(content);
+    const data = {
+      title: 'title',
+      description : 'description',
+      reference_id: 8,
+      state: 'in progress',
+      project_id: 5
+    }
+    const query = `INSERT INTO tasks(title, description , reference_id , state , project_id) VALUES('${data.title}' , '${data.description}' , ${data.reference_id} , '${data.state}' , ${data.project_id});`;
+    getData(query,(err.result) =>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'application/json'});
+        res.end(JSON.stringify([{message: 'Internal Server Error ... in AddTask Route'}]));
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleEditTask(req, res){
-
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+  req.on('end',()=>{
+    // const data = querystring.parse(content);
+    const data = {
+      id: 6,
+      title: 'new title',
+      description : 'blah blah',
+      reference_id: 8 ,
+      state: 'blah',
+      project_id: 5
+    }
+    const query = `UPDATE tasks SET title='${data.title}' , description = '${data.description}' , reference_id=${data.reference_id} , state = '${data.state}' ,project_id=${data.project_id} WHERE id = ${data.id}`;
+    getData( query ,(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'application/json'});
+        res.end(JSON.stringify([{message: 'Internal Server Error ... EditTask Route' }]));
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 }
 
 function handleDeleteTask(req, res){
+  let content = '';
+  req.on('data',(shunk)=>{
+    content += shunk;
+  });
+  req.on('end',()=>{
+    // const data = querystring.parse(content);
+    const taskID = 1;
+    const query = `DELETE FROM tasks WHERE id = ${taskID}`;
+    getData(query ,(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'application/json'});
+        res.end(JSON.stringify([{message: 'Internal Server Error ..... DeleteTask Route' }]));
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleNotFound(req, res){
-
+  fs.readFile(__dirname + '../public/404.html', (err, data) => {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'text/html'});
+      res.end('Oops!!, something went wrong');
+    }
+    else{
+      res.writeHead(200 , {'Content-Type': 'text/html'});
+      res.end(data);
+    }
+  });
 }
 
 function handleGeneric(req, res){

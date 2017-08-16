@@ -1,5 +1,6 @@
 const tape = require('tape');
 const shot = require('shot');
+
 const router = require('../src/routes.js');
 
 tape('Home Route Test' , (t) => {
@@ -156,3 +157,4 @@ tape('JS Request Test' , (t) => {
       t.end();
     });
 });
+
