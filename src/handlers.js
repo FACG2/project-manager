@@ -1,11 +1,13 @@
 const fs = require('fs');
 const getData = require('./queries/generic');
 const queryString = require('querystring');
+const request = require('./request');
 
 const contentTypes = {
   css: 'text/css',
   js: 'application/js',
-  ico: 'image/x-icon'
+  ico: 'image/x-icon',
+  html: 'text/html'
 }
 
 
@@ -38,13 +40,7 @@ function handleAddTeam(req, res){
   });
 
   req.on('end' , () => {
-    // const data = queryString.parse(content);
-    // github.com/samer?name=samer&age=20
-    // ==> {name: samer , age: 20}
-    const data = {
-      name : 'any name',
-      description: 'description'
-    }
+    const data = queryString.parse(content);
     const query = `INSERT INTO teams(name , description) VALUES('${data.name}' , '${data.description}');`;
     getData(query , (err, result)=>{
       if(err){
@@ -61,16 +57,38 @@ function handleAddTeam(req, res){
 
 function handleTeams(req, res){
   let teamID = req.url.slice(3);
-  // let teamID = req.url.split('/tm')[1];
-  const query = `SELECT * FROM team WHERE id = ${Number(teamID)}`;
+  const query = `SELECT * FROM teams WHERE id = ${Number(teamID)}`;
   getData(query , (err, result) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'application/json'});
       res.end(JSON.strigify([{message: 'Team not found'}]));
     }
     else{
-      res.writeHead(200 , {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(result));
+      let ids = res.map((obj) => {
+        return {id: obj.id , name: obj.name , description: obj.description};
+      });
+      ids.map((team) => {
+        team.projects = [];
+        team.members = [];
+        getData(`SELECT id , title , description , state FROM projects WHERE team_id=${team.id}` , (err , projectsRes) => {
+          if(err){
+            console.log('in projects query' , err);
+          }
+          else{
+            team.projects = projectsRes;
+            getData(`SELECT member_id , memebers.name FROM teams_members INNER JOIN memebers ON memebers.id = teams_members.member_id WHERE team_id=${team.id}` , (err , membersRes) => {
+              if(err){
+                console.log('member query error' , err);
+              }
+              else{
+                team.members = membersRes;
+                res.writeHead(200 , {'Content-Type': 'application/json'});
+                res.end(JSON.stringify(team));
+              }
+            });
+          }
+        });
+      });
     }
   });
 
@@ -100,11 +118,8 @@ function handleAddMember(req, res){
 
   req.on('end',()=>{
     // const data = querystring.parse(content);
-    const data = {
-      member_id: 1,
-      project_id: 5
-    }
-    const query = `INSERT INTO teams_members(team_id , member_id) VALUES('${data.team_id}' , '${data.project_id}');`;
+    const data = request(queryString.parse(content).username);
+    const query = `INSERT INTO members(name , bio , pic , github_link) VALUES('${data.name}' , '${data.bio}' , '${data.pic}' , '${data.github_link}');`;
     getData(query,(err,result)=>{
       if(err){
         res.writeHead(500,{'Content-Type':'application/json'});
@@ -116,7 +131,6 @@ function handleAddMember(req, res){
       }
     });
   });
-
 }
 
 function handleDeleteMemeber(req, res){
@@ -126,9 +140,8 @@ function handleDeleteMemeber(req, res){
   });
 
   req.on('end',()=>{
-    // const data = querystring.parse(content);
-    const member_id = 1;
-    const query = `DELETE FROM teams_members WHERE member_id = ${member_id}`
+    const data = querystring.parse(content);
+    const query = `DELETE FROM teams_members WHERE member_id = ${data.member_id}`
     getData(query ,(err,result)=>{
       if(err){
         res.writeHead(500,{'Content-Type':'application/json'});
@@ -150,7 +163,8 @@ function handleEditTeam(req, res){
   });
   res.on('end',()=>{
     const data = querystring.parse(content);
-    getData('UPDATE team SET title = value1, description = value2, ...WHERE condition ..',(err,result)=>{
+    const query = `UPDATE teams SET title = ${data.title} , description = ${data.description} WHERE id = ${data.id}`;
+    getData( query , (err,result)=>{
       if(err){
         res.writeHead(500,{'Content-Type':'text/html'});
         res.end('internal server error ,,, in edit Team Route');
@@ -172,7 +186,8 @@ function handleDeleteTeam(req, res){
   });
   res.on('end',()=>{
     const data = querystring.parse(content);
-    getData('DELETE FROM team WHERE ,,,,,',(err,result)=>{
+    const query = `DELETE FROM teams WHERE id=${data.id}`;
+    getData( query , (err,result)=> {
       if(err){
         res.writeHead(500,{'Content-Type':'text/html'});
         res.end('internal server error ,,, in delete Team Route');
@@ -193,10 +208,18 @@ function handleAddProject(req, res){
     content += chunk;
   });
 
+  // CREATE TABLE projects(
+  //   ID SERIAL PRIMARY KEY NOT NULL,
+  //   title VARCHAR(100) NOT NULL,
+  //   description TEXT DEFAULT 'No Description',
+  //   state VARCHAR(100) NOT NULL,
+  //   team_id INTEGER REFERENCES teams(id) NOT NULL
+  // );
+
   req.on('end' , () => {
     const data = queryString.parse(content);
-
-    getData("INSERT INTO projects() VALUES() RETURNING .." , (err, result)=>{
+    const query = `INSERT INTO projects(title , description , state) VALUES('${data.title}' , '${data.description}' , '${data.state}' , ${data.team_id})`;
+    getData(query , (err, result)=>{
       if(err){
         res.writeHead(500 , {'Content-Type': 'text/html'});
         res.end('internal server error ,,, in add projects Route');
@@ -218,9 +241,8 @@ function handleEditProject(req, res){
 
   req.on('end' , () => {
     const data = queryString.parse(content);
-
-    getData(" UPDATE projects SET title = value1, description = value2, ...WHERE condition .." ,
-     (err, result)=>{
+    const query = `UPDATE projects SET title = '${data.title}' , description= '${data.description}' , state='${data.state}' , team_id=${data.team_id} WHERE id = ${data.project_id}`;
+    getData(query , (err, result)=>{
       if(err){
         res.writeHead(500 , {'Content-Type': 'text/html'});
         res.end('internal server error ,,, in edit project Route');
@@ -235,9 +257,8 @@ function handleEditProject(req, res){
 }
 
 function handleDeleteProject(req, res){
-let project_title = '';
-    getData(`DELETE FROM projects WHERE title = ${projects.title}` ,
-       (err, result)=>{
+    let data = queryString.parse;
+    getData(`DELETE FROM projects WHERE title = ${data.title}` , (err, result)=>{
         if(err){
           res.writeHead(500 , {'Content-Type': 'text/html'});
           res.end('internal server error ,,, in delete project Route');
@@ -251,6 +272,7 @@ let project_title = '';
 
 /* end of my section */
 
+// incomplete handler
 function handleProjectPlan(req, res){
   let planID = req.url.slice(3);
   const query = `SELECT * FROM `
@@ -273,14 +295,14 @@ function handleAddTask(req, res){
   });
 
   req.on('end',() =>{
-    // const data = querystring.parse(content);
-    const data = {
-      title: 'title',
-      description : 'description',
-      reference_id: 8,
-      state: 'in progress',
-      project_id: 5
-    }
+    const data = querystring.parse(content);
+    // const data = {
+    //   title: 'title',
+    //   description : 'description',
+    //   reference_id: 8,
+    //   state: 'in progress',
+    //   project_id: 5
+    // }
     const query = `INSERT INTO tasks(title, description , reference_id , state , project_id) VALUES('${data.title}' , '${data.description}' , ${data.reference_id} , '${data.state}' , ${data.project_id});`;
     getData(query,(err,result) =>{
       if(err){
@@ -302,15 +324,15 @@ function handleEditTask(req, res){
     content += shunk;
   });
   req.on('end',()=>{
-    // const data = querystring.parse(content);
-    const data = {
-      id: 6,
-      title: 'new title',
-      description : 'blah blah',
-      reference_id: 8 ,
-      state: 'blah',
-      project_id: 5
-    }
+    const data = querystring.parse(content);
+    // const data = {
+    //   id: 6,
+    //   title: 'new title',
+    //   description : 'blah blah',
+    //   reference_id: 8 ,
+    //   state: 'blah',
+    //   project_id: 5
+    // }
     const query = `UPDATE tasks SET title='${data.title}' , description = '${data.description}' , reference_id=${data.reference_id} , state = '${data.state}' ,project_id=${data.project_id} WHERE id = ${data.id}`;
     getData( query ,(err,result)=>{
       if(err){
@@ -331,9 +353,9 @@ function handleDeleteTask(req, res){
     content += shunk;
   });
   req.on('end',()=>{
-    // const data = querystring.parse(content);
-    const taskID = 1;
-    const query = `DELETE FROM tasks WHERE id = ${taskID}`;
+    const data = querystring.parse(content);
+    // const taskID = 1;
+    const query = `DELETE FROM tasks WHERE id = ${data.task_id}`;
     getData(query ,(err,result)=>{
       if(err){
         res.writeHead(500,{'Content-Type':'application/json'});
@@ -378,7 +400,7 @@ function handleGeneric(req, res){
 
 function handleGetData(req,res){
 
-  const query = `SELECT  teams.name, teams.id , teams.description, memebers.id ,memebers.id AS member_id , memebers.pic , memebers.name FROM teams_members
+  const query = `SELECT  teams.name AS team_name, teams.id  AS team_id, teams.description, memebers.id ,memebers.id AS member_id , memebers.pic , memebers.name FROM teams_members
                  INNER JOIN memebers ON memebers.id = teams_members.member_id
                  INNER JOIN teams ON teams.id = teams_members.team_id;`;
   getData(query , (err, result) => {
@@ -397,7 +419,7 @@ function handleGetData(req,res){
         }
         return acc;
       } , []);
-      console.log(newArr);
+      // console.log(newArr);
       res.writeHead(200 , {'Content-Type': 'application/json'});
       res.end(JSON.stringify(newArr));
     }

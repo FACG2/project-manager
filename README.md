@@ -24,5 +24,4 @@ How does it work?
 2. CD into the repository.
 3. install ```npm install```
 3. Type in terminal ```node src/server.js```
-4. In Chrome browser type ```localhost:3500``` to browse the site.
-
+4. In Chrome browser type ```localhost:4000``` to browse the site.
