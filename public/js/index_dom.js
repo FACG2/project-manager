@@ -20,7 +20,7 @@ function generateTeams(teamsArray) {
     res += team.members.reduce(function(res2, member){
       return res2 += '<li><a href="/mem'+member.id+'"><img src="'+member.pic+'" alt="'+member.name+'"></a></li>';
     },"")
-    res    += '</ul>'+
+    return res    += '</ul>'+
             '</section>';
   },"")
 }
