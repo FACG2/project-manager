@@ -20,7 +20,7 @@ function getFromGithubAPI(username , callback){
   });
 }
 
-
-getFromGithubAPI('samerelaila' , (err, data) => {
-  console.log(data);
-});
+module.exports = getFromGithubAPI;
+// getFromGithubAPI('samerelaila' , (err, data) => {
+//   console.log(data);
+// });
