@@ -25,4 +25,4 @@ How does it work?
 3. install ```npm install```
 3. Type in terminal ```node src/server.js```
 4. In Chrome browser type ```localhost:3500``` to browse the site.
-### Visit the site from [Here](www.heroku.com)
+
