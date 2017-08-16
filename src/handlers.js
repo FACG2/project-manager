@@ -19,7 +19,7 @@ const contentTypes = {
 
 // GET
 function handleHome(req, res){
-  fs.readFile(__dirname + '../public/index.html', (err, data) => {
+  fs.readFile(__dirname + '/../public/index.html', (err, data) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'text/plain'});
       res.end('something went wrong in home page');
@@ -61,11 +61,12 @@ function handleAddTeam(req, res){
 
 function handleTeams(req, res){
   let teamID = req.url.slice(3);
+  // let teamID = req.url.split('/tm')[1];
   const query = `SELECT * FROM team WHERE id = ${Number(teamID)}`;
   getData(query , (err, result) => {
     if(err){
-      res.writeHead(500 , JSON.strigify([{message: 'something went wrong in handleTeams Route'}]));
-      res.end('something went wrong in handleTeams');
+      res.writeHead(500 , {'Content-Type': 'application/json'});
+      res.end(JSON.strigify([{message: 'Team not found'}]));
     }
     else{
       res.writeHead(200 , {'Content-Type': 'application/json'});
@@ -139,25 +140,60 @@ function handleDeleteMemeber(req, res){
       }
     });
   });
-
 }
 
 function handleEditTeam(req, res){
+  let content = '';
+  res.on('data',(shunk)=>{
+    content +=shunk;
+
+  });
+  res.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('UPDATE team SET title = value1, description = value2, ...WHERE condition ..',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('internal server error ,,, in edit Team Route');
+      }
+      else{
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleDeleteTeam(req, res){
+  let contet = '';
+  res.on('data',(shunk)=>{
+    content += shunk;
+
+  });
+  res.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('DELETE FROM team WHERE ,,,,,',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('internal server error ,,, in delete Team Route');
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 /* my section */
 function handleAddProject(req, res){
 
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
+  req.on('end' , () => {
     const data = queryString.parse(content);
 
     getData("INSERT INTO projects() VALUES() RETURNING .." , (err, result)=>{
@@ -171,19 +207,16 @@ function handleAddProject(req, res){
       }
     });
   });
-
-
-
 }
 
 function handleEditProject(req, res){
 
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
+  req.on('end' , () => {
     const data = queryString.parse(content);
 
     getData(" UPDATE projects SET title = value1, description = value2, ...WHERE condition .." ,
@@ -249,7 +282,7 @@ function handleAddTask(req, res){
       project_id: 5
     }
     const query = `INSERT INTO tasks(title, description , reference_id , state , project_id) VALUES('${data.title}' , '${data.description}' , ${data.reference_id} , '${data.state}' , ${data.project_id});`;
-    getData(query,(err.result) =>{
+    getData(query,(err,result) =>{
       if(err){
         res.writeHead(500,{'Content-Type':'application/json'});
         res.end(JSON.stringify([{message: 'Internal Server Error ... in AddTask Route'}]));
@@ -316,7 +349,7 @@ function handleDeleteTask(req, res){
 }
 
 function handleNotFound(req, res){
-  fs.readFile(__dirname + '../public/404.html', (err, data) => {
+  fs.readFile(__dirname + '/../public/404.html', (err, data) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'text/html'});
       res.end('Oops!!, something went wrong');
@@ -343,20 +376,52 @@ function handleGeneric(req, res){
   });
 }
 
+function handleGetData(req,res){
+
+  const query = `SELECT  teams.name, teams.id , teams.description, memebers.id ,memebers.id AS member_id , memebers.pic , memebers.name FROM teams_members
+                 INNER JOIN memebers ON memebers.id = teams_members.member_id
+                 INNER JOIN teams ON teams.id = teams_members.team_id;`;
+  getData(query , (err, result) => {
+    if(err){
+      res.writeHead(500 , {'Content-Type': 'application/json'});
+      res.end(JSON.stringify([{message: 'No Data Found'}]));
+    }else{
+      let temp=[];
+      let newArr = result.reduce((acc , team) => {
+        if(temp.includes(team.team_id)){
+          acc[temp.indexOf(team.team_id)].members.push({id:team.member_id,name:team.member_name,pic:team.pic});
+          // console.log(team.member_name);
+        }else{
+          acc.push({id:team.team_id ,name:team.team_name ,description:team.description, members:[{id:team.member_id,name:team.member_name,pic:team.pic}]});
+          temp.push(team.team_id);
+        }
+        return acc;
+      } , []);
+      console.log(newArr);
+      res.writeHead(200 , {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(newArr));
+    }
+  })
+}
+// SELECT  teams.name, teams.id , teams.description, memebers.id , memebers.pic , memebers.name FROM teams_members INNER JOIN memebers ON memebers.id = teams_members.member_id INNER JOIN teams ON teams.id = teams_members.team_id
+
 module.exports = {
-  handleAddTeam: handleAddTeam,
-  handleTeams: handleTeams,
-  handleMembers: handleMembers,
-  handleAddMember: handleAddMember,
-  handleDeleteMemeber: handleDeleteMemeber,
-  handleEditTeam: handleEditTeam,
-  handleDeleteTeam: handleDeleteTeam,
-  handleAddProject: handleAddProject,
-  handleEditProject: handleEditProject,
-  handleDeleteProject: handleDeleteProject,
-  handleProjectPlan: handleProjectPlan,
-  handleAddTask, handleAddTask,
-  handleEditTask: handleEditTask,
-  handleDeleteTask: handleDeleteTask,
-  handleNotFound: handleNotFound
+  handleHome,
+  handleAddTeam,
+  handleTeams,
+  handleMembers,
+  handleAddMember,
+  handleDeleteMemeber,
+  handleEditTeam,
+  handleDeleteTeam,
+  handleAddProject,
+  handleEditProject,
+  handleDeleteProject,
+  handleProjectPlan,
+  handleAddTask,
+  handleEditTask,
+  handleDeleteTask,
+  handleNotFound,
+  handleGetData,
+  handleGeneric
 }

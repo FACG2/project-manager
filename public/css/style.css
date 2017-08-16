@@ -1,0 +1,71 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.container{
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+nav{
+  background: black;
+  display: block;
+  color: white;
+  text-align: center;
+}
+nav a{
+  color: white;
+  font-size: 18px;
+  padding:12px;
+  display: block;
+  font-weight: 600;
+}
+a{
+  text-decoration: none;
+}
+/*Home Page*/
+.mainTitle{
+  text-align: center;
+}
+.teamSec{
+  float: left;
+  width: 30%;
+  margin: 1.5%;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+.teamSec img{
+  width: 20px;
+  margin: 0 1px;
+}
+.teamSec li{
+  float: left;
+  list-style: none;
+  padding-left: 2px;
+}
+
+.teamSec h5 {
+  margin:20px 0;
+}
+.teamSec h5,.teamSec ul , .teamSec h2{
+  margin-left: 5px;
+}
+
+@media (max-width: 900px){
+  .teamSec{
+  float: left;
+  width: 47%;
+
+}
+
+}
+
+@media (max-width: 550px){
+  .teamSec{
+  float: left;
+  width: 97%;
+
+}
+
+}

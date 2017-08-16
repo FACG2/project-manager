@@ -1,0 +1,22 @@
+/*pages*/
+Home page =>
+- Teams(title, small team pics)
+- Navigation bar(logo and home page) static in all pages
+
+Team page =>
+- right side content=>Projects (title, small team pic
+  , 1 line of description)
+- left sideBar => team members(x button next to team member)
+  ,team description and add member button
+
+Project page =>
+- list for references(bug, enhancement, feature) and add button
+- lists for (tasks, sprint, in progress, test, test fail, done)
+
+member profile page=>
+- profile pic
+- name
+- bio
+- projects
+- team
+- link to github

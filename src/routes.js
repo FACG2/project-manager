@@ -5,19 +5,31 @@ function router(req, res){
   if (url === '/') {
     // home page
     handlers.handleHome(req,res);
-
+  }else if (url === '/getData') {
+    //get teams
+    handlers.handleGetData(req,res);
   }else if (url === '/addteam' && req.method.toUpperCase() === 'POST') {
     //add team
     handlers.handleAddTeam(req, res);
 
-  }else if (url.startsWith('/tm') && req.method.toUpperCase() === 'GET') {
-    // list teams
-    handlers.handleTeams(req, res);
-
-  }else if (url.startsWith('/mem') && req.method.toUpperCase() === 'GET') {
+  }else if (url.startsWith('/tm')) {
+    // team profile
+    if (url.split('/')[2] ==='getdata') {
+      req.url = req.url.replace("/getData", "");
+      handlers.handleTeams(req, res);
+    }else{
+      req.url = '/team.html';
+      handlers.handleGeneric(req, res);
+    }
+  }else if (url.startsWith('/mem')) {
     // member profile
-    handlers.handleMembers(req, res);
-
+    if (url.split('/')[2] ==='getdata') {
+      req.url = req.url.replace("/getData", "");
+      handlers.handleMembers(req, res);
+    }else{
+      req.url = '/member.html';
+      handlers.handleGeneric(req, res);
+    }
   }else if (url === '/addmember' && req.method.toUpperCase() === 'POST') {
     //add member
     handlers.handleAddMember(req, res);
