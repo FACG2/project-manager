@@ -1,0 +1,21 @@
+- list teams
+- list projects for single team
+- list plan for single project
+- add team member from team page
+  - add member using his github username
+  - single member profile page
+  - member has profile pic, name, teams, projects,
+    link to github profile
+- add project from team page
+- team (name(id), description, members, projects)
+- project (title, description, members assigned in it, references)
+- task (title, description(optional), members assigned in it
+        , state , reference state(enhancement, feature, bug)
+- member (name(id), profile pic, bio , teams , projects , github url)
+- add team  from team lists (homepage)
+- user can see the tasks in state columns in project plan page
+- user can change state of the tasks
+- user can add, delete, edit task
+- user can add, delete, edit project
+- user can add, delete, edit team
+- add project status (completed, in progress , on hold)
