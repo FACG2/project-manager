@@ -1,7 +1,10 @@
 # project-manager
 > A simple project manager site
+
 > Week 6 project
+
 > Date of submission 16-8-2017
+
 > Done by: Samer, Walid, Moath and Kefah
 
 ###  What is project-manager?
