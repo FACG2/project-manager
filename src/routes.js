@@ -5,7 +5,7 @@ function router(req, res){
   if (url === '/') {
     // home page
     handlers.handleHome(req,res);
-  }else if (url === '/getdata') {
+  }else if (url === '/getData') {
     //get teams
     handlers.handleGetData(req,res);
   }else if (url === '/addteam' && req.method.toUpperCase() === 'POST') {
@@ -15,7 +15,7 @@ function router(req, res){
   }else if (url.startsWith('/tm')) {
     // team profile
     if (url.split('/')[2] ==='getdata') {
-      req.url = req.url.replace("/getdata", "");
+      req.url = req.url.replace("/getData", "");
       handlers.handleTeams(req, res);
     }else{
       req.url = '/team.html';
@@ -24,7 +24,7 @@ function router(req, res){
   }else if (url.startsWith('/mem')) {
     // member profile
     if (url.split('/')[2] ==='getdata') {
-      req.url = req.url.replace("/getdata", "");
+      req.url = req.url.replace("/getData", "");
       handlers.handleMembers(req, res);
     }else{
       req.url = '/member.html';
