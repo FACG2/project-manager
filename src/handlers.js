@@ -19,7 +19,7 @@ const contentTypes = {
 
 // GET
 function handleHome(req, res){
-  fs.readFile(__dirname + '../public/index.html', (err, data) => {
+  fs.readFile(__dirname + '/../public/index.html', (err, data) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'text/plain'});
       res.end('something went wrong in home page');
@@ -156,7 +156,7 @@ function handleEditTeam(req, res){
         res.end('internal server error ,,, in edit Team Route');
       }
       else{
-        res.writeHead(200,{'application/json'});
+        res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify(result));
       }
     });
@@ -282,7 +282,7 @@ function handleAddTask(req, res){
       project_id: 5
     }
     const query = `INSERT INTO tasks(title, description , reference_id , state , project_id) VALUES('${data.title}' , '${data.description}' , ${data.reference_id} , '${data.state}' , ${data.project_id});`;
-    getData(query,(err.result) =>{
+    getData(query,(err,result) =>{
       if(err){
         res.writeHead(500,{'Content-Type':'application/json'});
         res.end(JSON.stringify([{message: 'Internal Server Error ... in AddTask Route'}]));
@@ -349,7 +349,7 @@ function handleDeleteTask(req, res){
 }
 
 function handleNotFound(req, res){
-  fs.readFile(__dirname + '../public/404.html', (err, data) => {
+  fs.readFile(__dirname + '/../public/404.html', (err, data) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'text/html'});
       res.end('Oops!!, something went wrong');
@@ -377,46 +377,51 @@ function handleGeneric(req, res){
 }
 
 function handleGetData(req,res){
+
   const query = `SELECT  teams.name, teams.id , teams.description, memebers.id ,memebers.id AS member_id , memebers.pic , memebers.name FROM teams_members
                  INNER JOIN memebers ON memebers.id = teams_members.member_id
-                 INNER JOIN teams ON teams.id = teams_members.team_id `;
+                 INNER JOIN teams ON teams.id = teams_members.team_id;`;
   getData(query , (err, result) => {
     if(err){
       res.writeHead(500 , {'Content-Type': 'application/json'});
-      res.end(JSON..stringify([{message: 'No Data Found'}]));
-    }
-    else{
+      res.end(JSON.stringify([{message: 'No Data Found'}]));
+    }else{
       let temp=[];
       let newArr = result.reduce((acc , team) => {
         if(temp.includes(team.team_id)){
           acc[temp.indexOf(team.team_id)].members.push({id:team.member_id,name:team.member_name,pic:team.pic});
+          // console.log(team.member_name);
         }else{
           acc.push({id:team.team_id ,name:team.team_name ,description:team.description, members:[{id:team.member_id,name:team.member_name,pic:team.pic}]});
           temp.push(team.team_id);
         }
         return acc;
       } , []);
+      console.log(newArr);
       res.writeHead(200 , {'Content-Type': 'application/json'});
       res.end(JSON.stringify(newArr));
+    }
   })
 }
 // SELECT  teams.name, teams.id , teams.description, memebers.id , memebers.pic , memebers.name FROM teams_members INNER JOIN memebers ON memebers.id = teams_members.member_id INNER JOIN teams ON teams.id = teams_members.team_id
 
 module.exports = {
-  handleAddTeam: handleAddTeam,
-  handleTeams: handleTeams,
-  handleMembers: handleMembers,
-  handleAddMember: handleAddMember,
-  handleDeleteMemeber: handleDeleteMemeber,
-  handleEditTeam: handleEditTeam,
-  handleDeleteTeam: handleDeleteTeam,
-  handleAddProject: handleAddProject,
-  handleEditProject: handleEditProject,
-  handleDeleteProject: handleDeleteProject,
-  handleProjectPlan: handleProjectPlan,
-  handleAddTask, handleAddTask,
-  handleEditTask: handleEditTask,
-  handleDeleteTask: handleDeleteTask,
-  handleNotFound: handleNotFound,
-  handleGetData: handleGetData
+  handleHome,
+  handleAddTeam,
+  handleTeams,
+  handleMembers,
+  handleAddMember,
+  handleDeleteMemeber,
+  handleEditTeam,
+  handleDeleteTeam,
+  handleAddProject,
+  handleEditProject,
+  handleDeleteProject,
+  handleProjectPlan,
+  handleAddTask,
+  handleEditTask,
+  handleDeleteTask,
+  handleNotFound,
+  handleGetData,
+  handleGeneric
 }
