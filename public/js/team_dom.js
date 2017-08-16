@@ -4,11 +4,21 @@
 
   apiReq(window.location.pathname+'/getData', 'GET', function(err,data) {
     if (!err) {
+      const deleteMemberI= document.querySelectorAll(' .deleteMember')
       /*Adding members in asside div*/
       document.querySelector('.teamSidebar h1').textContent=data.name;
       document.querySelector('.teamSidebar ul').innerHTML = generateMembersList(data.members);
+      /*Even listener for delete member*/
+      let deleteDivs = document.getElementsByClassName('deleteMember');
+      deleteDivs = Array.from(deleteDivs);
+      deleteDivs.forEach(function(deleteDiv){
+        deleteDiv.addEventListener('click',function(){
+          //delete pleaseeeeee
+        })
+      });
       /*Adding projects divs*/
       teamsDiv.innerHTML = generateProjects(data.projects);
+
     }else{
       mainDiv.innerHTML = '<h1>'+data+'</h1>';
     }
@@ -31,8 +41,8 @@ function generateProjects(projectsArray) {
 function generateMembersList(membersArray) {
   let addMemberLi = '<li class="addNewMember"><i>Add new Member</i></li>';
   return membersArray.reduce(function(res, member) {
-    return res += '<li><i>DELETE</i> '+member+'</li>'
-  },addMemberLi);
+    return res += '<li><i class="deleteMember" id="'+member+'">DELETE</i> '+member+'</li>'
+  },addMemberLi);// added membername as id to delete to delete user by username
 }
 /*
 i need team = {
