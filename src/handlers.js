@@ -139,7 +139,6 @@ function handleDeleteMemeber(req, res){
       }
     });
   });
-
 }
 
 function handleEditTeam(req, res){
@@ -153,11 +152,11 @@ function handleDeleteTeam(req, res){
 function handleAddProject(req, res){
 
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
+  req.on('end' , () => {
     const data = queryString.parse(content);
 
     getData("INSERT INTO projects() VALUES() RETURNING .." , (err, result)=>{
@@ -171,19 +170,16 @@ function handleAddProject(req, res){
       }
     });
   });
-
-
-
 }
 
 function handleEditProject(req, res){
 
   let content = '';
-  res.on('data' , (chunk) => {
+  req.on('data' , (chunk) => {
     content += chunk;
   });
 
-  res.on('end' , () => {
+  req.on('end' , () => {
     const data = queryString.parse(content);
 
     getData(" UPDATE projects SET title = value1, description = value2, ...WHERE condition .." ,

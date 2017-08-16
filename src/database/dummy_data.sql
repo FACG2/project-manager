@@ -12,17 +12,17 @@ INSERT INTO projects(title , description , state) VALUES
             ('project3' , 'This is test description for project3' , 'completed');
 
 INSERT INTO tasks(title , description , reference_id , state , project_id) VALUES
-            ('task1' , 'This is task1 description' , 9 , 'on hold' , 5),
-            ('task2' , 'This is task2 description' , 8 , 'in progress' , 5),
-            ('task3' , 'This is task3 description' , 8 , 'test' , 5),
-            ('task4' , 'This is task4 description' , 7 , 'test fail' , 5),
-            ('task5' , 'This is task5 description' , 9 , 'done', 5),
-            ('task1' , 'This is task1 description' , 7 , 'on hold' , 6),
-            ('task2' , 'This is task2 description' , 8 , 'in progress' , 6),
-            ('task3' , 'This is task3 description' , 9 , 'done' , 6),
-            ('task1' , 'This is task1 description' , 7 , 'on hold' , 7),
-            ('task2' , 'This is task2 description' , 8 , 'in progress' , 7),
-            ('task3' , 'This is task3 description' , 9 , 'done' , 7);
+            ('task1' , 'This is task1 description' , 6 , 'on hold' , 4),
+            ('task2' , 'This is task2 description' , 5 , 'in progress' , 4),
+            ('task3' , 'This is task3 description' , 5 , 'test' , 4),
+            ('task4' , 'This is task4 description' , 4 , 'test fail' , 4),
+            ('task5' , 'This is task5 description' , 6 , 'done', 4),
+            ('task1' , 'This is task1 description' , 4 , 'on hold' , 5),
+            ('task2' , 'This is task2 description' , 5 , 'in progress' , 5),
+            ('task3' , 'This is task3 description' , 6 , 'done' , 5),
+            ('task1' , 'This is task1 description' , 4 , 'on hold' , 6),
+            ('task2' , 'This is task2 description' , 5 , 'in progress' , 6),
+            ('task3' , 'This is task3 description' , 6 , 'done' , 6);
 
 INSERT INTO teams(name , description) VALUES
             ('team1' , 'This is test description'),
@@ -53,12 +53,12 @@ INSERT INTO teams_members(team_id , member_id) VALUES
 
 
 INSERT INTO members_projects(project_id , member_id) VALUES
+            (4 , 1),
             (5 , 1),
-            (6 , 1),
-            (5 , 7),
-            (6 , 4),
-            (7 , 9),
-            (7 , 8);
+            (4 , 7),
+            (5 , 4),
+            (6 , 9),
+            (6 , 8);
 
 
 COMMIT;
