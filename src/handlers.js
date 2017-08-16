@@ -143,10 +143,46 @@ function handleDeleteMemeber(req, res){
 }
 
 function handleEditTeam(req, res){
+  let content = '';
+  res.on('data',(shunk)=>{
+    content +=shunk;
+
+  });
+  res.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('UPDATE team SET title = value1, description = value2, ...WHERE condition ..',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('internal server error ,,, in edit Team Route');
+      }
+      else{
+        res.writeHead(200,{'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 
 function handleDeleteTeam(req, res){
+  let contet = '';
+  res.on('data',(shunk)=>{
+    content += shunk;
+
+  });
+  res.on('end',()=>{
+    const data = querystring.parse(content);
+    getData('DELETE FROM team WHERE ,,,,,',(err,result)=>{
+      if(err){
+        res.writeHead(500,{'Content-Type':'text/html'});
+        res.end('internal server error ,,, in delete Team Route');
+      }
+      else {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify(result));
+      }
+    });
+  });
 
 }
 /* my section */
