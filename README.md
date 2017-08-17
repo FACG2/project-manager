@@ -1,3 +1,6 @@
+<h1 style="font-size: 70px">Code Is not completed yet</h1>
+<h3 style="font-size: 30px">its 70% ready :(</h3>
+
 # project-manager
 > A simple project manager site
 
